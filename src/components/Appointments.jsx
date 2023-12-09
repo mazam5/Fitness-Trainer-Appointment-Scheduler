@@ -6,7 +6,6 @@ import {
   Edit,
   RemoveCircle,
 } from "@mui/icons-material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Alert,
   Box,
@@ -18,8 +17,6 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Menu,
-  MenuItem,
   Paper,
   Snackbar,
   Table,
@@ -31,16 +28,25 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../context/AppContext";
 
 export default function AllAppointments() {
+  // context api data
   const { appointments, setAppointments } = useContext(AppContext);
+  // states
   const [openDialog, setOpenDialog] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
   const [editView, setEditView] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
+  const [openForm, setOpenForm] = useState(false);
+
+  const [addAppointment, setAddAppointment] = useState({
+    firstName: "",
+    lastName: "",
+    location: "",
+    dateTime: [],
+  });
 
   const [editField, setEditField] = useState({
     firstName: "",
@@ -53,6 +59,8 @@ export default function AllAppointments() {
       },
     ],
   });
+
+  const [deletedAppointments, setDeletedAppointments] = useState({});
 
   const handleCancel = () => {
     setEditView(false);
@@ -69,75 +77,10 @@ export default function AllAppointments() {
       dateTime: editField.dateTime,
     };
     setAppointments(updatedAppointments);
-
-    // Reset state after saving
     setEditView(false);
     setEditIndex(null);
+    setEditSnackOpen(true);
   };
-
-  const columns = [
-    {
-      id: "firstName",
-      label: "First Name",
-    },
-    {
-      id: "lastName",
-      label: "Last Name",
-    },
-    {
-      id: "appointments",
-      label: "Appointments",
-    },
-    {
-      id: "location",
-      label: "Location",
-    },
-    {
-      id: "actions",
-      label: "Actions",
-    },
-  ];
-
-  const rows = appointments.map((appointment, index) => {
-    return {
-      id: index, // Use a unique identifier for the key
-      firstName: appointment.firstName,
-      lastName: appointment.lastName,
-      location: appointment.location,
-      dateTime: appointment.dateTime.map((dateTime, innerIndex) => {
-        return (
-          <Box
-            key={innerIndex}
-            sx={{
-              mb: "2px",
-            }}
-          >
-            <Box>
-              <Typography sx={{ fontWeight: "bold" }}>
-                {new Date(
-                  dateTime.date + "T" + dateTime.time + ":00",
-                ).toLocaleString("en-IN", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </Typography>
-              <Typography sx={{ color: "grey" }}>
-                {new Date(
-                  dateTime.date + "T" + dateTime.time + ":00",
-                ).toLocaleString("en-IN", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                  timeZoneName: "short",
-                })}
-              </Typography>
-            </Box>
-          </Box>
-        );
-      }),
-    };
-  });
 
   const handleDialog = () => {
     setOpenDialog(!openDialog);
@@ -145,38 +88,24 @@ export default function AllAppointments() {
 
   const handleDelete = () => {
     setDeletedAppointments(appointments[deleteIndex]);
-    if (deleteIndex !== null) {
-      const updatedAppointments = appointments.filter(
-        (_, index) => index !== deleteIndex,
-      );
-      setAppointments(updatedAppointments);
-      setDeleteIndex(null);
-    }
+    setAppointments(appointments.filter((_, index1) => index1 !== deleteIndex));
     handleDialog();
     setDelSnackOpen(true);
   };
-  const handleEdit = (index) => {
-    setEditIndex(index);
-    setEditField(appointments[index]);
-    console.log(appointments[index]);
+
+  const handleEdit = (index1) => {
+    setEditIndex(index1);
+    setEditField(appointments[index1]);
     setEditView(true);
-    handleMenu();
-  };
-
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleMenu = () => {
-    setAnchorEl(null);
+    // handleMenu();
   };
 
   // delete snackbar
   const [delSnackOpen, setDelSnackOpen] = useState(false);
-  const [deletedAppointments, setDeletedAppointments] = useState({});
+  const [editSnackOpen, setEditSnackOpen] = useState(false);
+  const [addSnackOpen, setAddSnackOpen] = useState(false);
 
-  const handleSnackClose = (event, reason) => {
+  const handleDeleteSnackClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -184,6 +113,18 @@ export default function AllAppointments() {
     setDeletedAppointments({});
   };
 
+  const handleEditSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setEditSnackOpen(false);
+  };
+  const handleAddSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAddSnackOpen(false);
+  };
   const action = (
     <React.Fragment>
       <Button
@@ -201,30 +142,80 @@ export default function AllAppointments() {
         size="small"
         aria-label="close"
         color="inherit"
-        onClick={handleSnackClose}
+        onClick={handleDeleteSnackClose}
       >
         <Close fontSize="small" />
       </IconButton>
     </React.Fragment>
   );
-  useEffect(() => {
-    console.log("deleteIndex", deleteIndex);
-    console.log("editIndex", editIndex);
+
+  // Add Appointment
+
+  const [dTAdd, setDTAdd] = useState({
+    date: "",
+    time: "",
   });
+
+  const handleAddDialog = () => {
+    setOpenForm(!openForm);
+  };
+
+  const handleAdd = () => {
+    addAppointment.dateTime.push(dTAdd);
+    setAppointments([...appointments, addAppointment]);
+    setAddAppointment({
+      firstName: "",
+      lastName: "",
+      location: "",
+      dateTime: [],
+    });
+    setOpenForm(!openForm);
+    setAddSnackOpen(true);
+  };
+
+  const columns = [
+    {
+      id: "appointments",
+      label: "Appointments",
+      align: "center",
+    },
+    {
+      id: "name",
+      label: "First & Last Name",
+      align: "center",
+    },
+    {
+      id: "location",
+      label: "Location",
+      align: "center",
+    },
+    {
+      id: "actions",
+      label: "Actions",
+      align: "center",
+    },
+  ];
 
   return (
     <Container>
-      <Typography variant="h4">My Appointments</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4">My Appointments</Typography>
+        <Button variant="contained" color="success" onClick={handleAddDialog}>
+          <AddCircle />
+          New Appointment
+        </Button>
+      </Box>
       <TableContainer component={Paper} elevation={5} sx={{ my: "10px" }}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: "Highlight" }}>
               {columns.map((column, index) => (
                 <TableCell
                   key={index}
                   sx={{
                     minWidth: column.minWidth,
-                    color: "grey",
+                    color: "white",
+                    borderRight: "1px solid white",
                   }}
                 >
                   {column.label}
@@ -233,246 +224,388 @@ export default function AllAppointments() {
             </TableRow>
           </TableHead>
           <TableBody sx={{ color: "black" }}>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                {editView && editIndex === index ? (
-                  <>
-                    <TableCell component="th" scope="row">
-                      <TextField
-                        id="firstName"
-                        label="First Name"
-                        variant="outlined"
-                        value={editField.firstName}
-                        onChange={(e) =>
-                          setEditField({
-                            ...editField,
-                            firstName: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        id="lastName"
-                        label="Last Name"
-                        variant="outlined"
-                        value={editField.lastName}
-                        onChange={(e) =>
-                          setEditField({
-                            ...editField,
-                            lastName: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Box>
-                        {editField.dateTime.map((datetime, index) => {
-                          return (
-                            <Box
-                              key={index}
-                              sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                              }}
-                            >
-                              <TextField
-                                value={datetime.date}
-                                onChange={(e) => {
-                                  setEditField({
-                                    ...editField,
-                                    dateTime: editField.dateTime.map(
-                                      (date, innerIndex) => {
-                                        if (innerIndex === index) {
-                                          return {
-                                            ...date,
-                                            date: e.target.value,
-                                          };
-                                        } else {
-                                          return date;
-                                        }
-                                      },
-                                    ),
-                                  });
+            {appointments.map((appointment, index1) => {
+              return (
+                <TableRow key={index1}>
+                  {editView && editIndex === index1 ? (
+                    <>
+                      <TableCell>
+                        <Box>
+                          {editField.dateTime.map((datetime, editIndex) => {
+                            return (
+                              <Box
+                                key={editIndex}
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "row",
                                 }}
-                                type="date"
-                              />
-                              <TextField
-                                type="time"
-                                value={datetime.time}
-                                onChange={(e) => {
-                                  setEditField({
-                                    ...editField,
-                                    dateTime: editField.dateTime.map(
-                                      (time, innerIndex) => {
-                                        if (innerIndex === index) {
-                                          return {
-                                            ...time,
-                                            time: e.target.value,
-                                          };
-                                        } else {
-                                          return time;
-                                        }
-                                      },
-                                    ),
-                                  });
-                                }}
-                              />
-                              <Box>
-                                <IconButton
-                                  onClick={() => {
+                              >
+                                <TextField
+                                  value={datetime.date}
+                                  onChange={(e) => {
                                     setEditField({
                                       ...editField,
-                                      dateTime: editField.dateTime.filter(
-                                        (_, innerIndex) => innerIndex !== index,
+                                      dateTime: editField.dateTime.map(
+                                        (date, innerIndex) => {
+                                          if (innerIndex === editIndex) {
+                                            return {
+                                              ...date,
+                                              date: e.target.value,
+                                            };
+                                          } else {
+                                            return date;
+                                          }
+                                        },
                                       ),
                                     });
                                   }}
-                                >
-                                  <RemoveCircle color="error" />
-                                </IconButton>
+                                  type="date"
+                                />
+                                <TextField
+                                  type="time"
+                                  value={datetime.time}
+                                  onChange={(e) => {
+                                    setEditField({
+                                      ...editField,
+                                      dateTime: editField.dateTime.map(
+                                        (time, innerIndex) => {
+                                          if (innerIndex === editIndex) {
+                                            return {
+                                              ...time,
+                                              time: e.target.value,
+                                            };
+                                          } else {
+                                            return time;
+                                          }
+                                        },
+                                      ),
+                                    });
+                                  }}
+                                />
+                                <Box>
+                                  <IconButton
+                                    onClick={() => {
+                                      setEditField({
+                                        ...editField,
+                                        dateTime: editField.dateTime.filter(
+                                          (_, innerIndex) =>
+                                            innerIndex !== editIndex,
+                                        ),
+                                      });
+                                    }}
+                                  >
+                                    <RemoveCircle color="error" />
+                                  </IconButton>
+                                </Box>
                               </Box>
-                            </Box>
-                          );
-                        })}
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        id="location"
-                        label="Location"
-                        variant="outlined"
-                        value={editField.location}
-                        onChange={(e) =>
-                          setEditField({
-                            ...editField,
-                            location: e.target.value,
-                          })
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: "flex" }}>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          sx={{ m: "2" }}
-                          onClick={handleSave}
-                        >
-                          Save
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          sx={{ m: "2" }}
-                          onClick={handleCancel}
-                        >
-                          Cancel
-                        </Button>
-                      </Box>
-                    </TableCell>
-                  </>
-                ) : (
-                  <>
-                    <TableCell component="th" scope="row">
-                      {row.firstName}
-                    </TableCell>
-                    <TableCell>{row.lastName}</TableCell>
-                    <TableCell>
-                      <Box
-                        component={"span"}
-                        sx={{ display: "flex", alignItems: "center" }}
-                      >
-                        <Box>{row.dateTime}</Box>
-                        <Box component={"span"}>
-                          <IconButton>
-                            <AddCircle color="success" />
-                          </IconButton>
+                            );
+                          })}
                         </Box>
-                      </Box>
-                    </TableCell>
-                    <TableCell>{row.location}</TableCell>
-                    <TableCell align="center">
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <TextField
+                          id="firstName"
+                          variant="outlined"
+                          value={editField.firstName}
+                          onChange={(e) =>
+                            setEditField({
+                              ...editField,
+                              firstName: e.target.value,
+                            })
+                          }
+                        />
+                        <TextField
+                          id="lastName"
+                          variant="outlined"
+                          value={editField.lastName}
+                          onChange={(e) =>
+                            setEditField({
+                              ...editField,
+                              lastName: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          id="location"
+                          variant="outlined"
+                          value={editField.location}
+                          onChange={(e) =>
+                            setEditField({
+                              ...editField,
+                              location: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-evenly",
+                          }}
+                        >
+                          <Button
+                            variant="contained"
+                            color="success"
+                            sx={{ m: "2" }}
+                            onClick={handleSave}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            sx={{ m: "2" }}
+                            onClick={handleCancel}
+                          >
+                            Cancel
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell>
+                        <Box
+                          component={"span"}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Box>
+                            {appointment.dateTime.map((datetime, index2) => {
+                              return (
+                                <Box
+                                  key={index2}
+                                  sx={{
+                                    mb: "5px",
+                                  }}
+                                >
+                                  <Box>
+                                    <Typography sx={{ fontWeight: "bold" }}>
+                                      {new Date(
+                                        datetime.date +
+                                          "T" +
+                                          datetime.time +
+                                          ":00",
+                                      ).toLocaleString("en-IN", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })}
+                                    </Typography>
+                                    <Typography sx={{ color: "grey" }}>
+                                      {new Date(
+                                        datetime.date +
+                                          "T" +
+                                          datetime.time +
+                                          ":00",
+                                      ).toLocaleString("en-IN", {
+                                        hour: "numeric",
+                                        minute: "numeric",
+                                        hour12: true,
+                                        timeZoneName: "short",
+                                      })}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              );
+                            })}
+                          </Box>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        {appointment.firstName}
+                        <br />
+                        <Typography
+                          component={"span"}
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          {appointment.lastName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography
+                          sx={{ fontWeight: "semibold", color: "black" }}
+                        >
+                          {appointment.location}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Box sx={{ display: "flex" }}>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={handleAddDialog}
+                            sx={{ my: "2" }}
+                          >
+                            <Add sx={{ mr: "2" }} />
+                            Appointment
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setEditIndex(index1);
+                              handleEdit(index1);
+                            }}
+                          >
+                            <Edit sx={{ mr: "2" }} />
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setDeleteIndex(index1);
+                              handleDialog();
+                            }}
+                            color="error"
+                          >
+                            <Delete sx={{ mr: "2" }} />
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </>
+                  )}
+                  <Dialog open={openDialog} onClose={handleDialog}>
+                    <DialogTitle>{"Delete Appointment?"}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Are you sure you want to delete this appointment?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
                       <Button
                         variant="contained"
-                        color="success"
-                        sx={{ my: "2" }}
+                        onClick={() => handleDialog()}
                       >
-                        <Add sx={{ mr: "2" }} />
-                        Add
+                        Cancel
                       </Button>
-                      <IconButton onClick={handleClick}>
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleMenu}
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          handleDelete(index1);
+                          handleDialog();
+                        }}
                       >
-                        <MenuItem
-                          onClick={() => {
-                            setEditIndex(index);
-                            handleEdit(index);
-                          }}
-                        >
-                          <Edit sx={{ mr: "2" }} />
-                          Edit
-                        </MenuItem>
-                        <MenuItem
-                          sx={{ color: "indianred" }}
-                          onClick={() => {
-                            setDeleteIndex(index);
-                            handleDialog();
-                            handleMenu();
-                          }}
-                        >
-                          <Delete sx={{ mr: "2" }} />
-                          Delete
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  </>
-                )}
-              </TableRow>
-            ))}
-            <Dialog open={openDialog} onClose={handleDialog}>
-              <DialogTitle>{"Delete Appointment?"}</DialogTitle>
+                        Delete
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </TableRow>
+              );
+            })}
+            <Dialog open={openForm} onClose={handleAddDialog}>
+              <DialogTitle>{"Add Appointment"}</DialogTitle>
               <DialogContent>
-                <DialogContentText>
-                  Are you sure you want to delete this appointment?
-                </DialogContentText>
+                <TextField
+                  autoFocus
+                  required
+                  margin="dense"
+                  value={addAppointment.firstName}
+                  onChange={(e) =>
+                    setAddAppointment({
+                      ...addAppointment,
+                      firstName: e.target.value,
+                    })
+                  }
+                  label="First Name"
+                  type="text"
+                  variant="filled"
+                />
+                <TextField
+                  required
+                  margin="dense"
+                  label="Last Name"
+                  value={addAppointment.lastName}
+                  onChange={(e) =>
+                    setAddAppointment({
+                      ...addAppointment,
+                      lastName: e.target.value,
+                    })
+                  }
+                  type="text"
+                  variant="filled"
+                />
+                <TextField
+                  required
+                  margin="dense"
+                  label="Location"
+                  value={addAppointment.location}
+                  onChange={(e) =>
+                    setAddAppointment({
+                      ...addAppointment,
+                      location: e.target.value,
+                    })
+                  }
+                  type="text"
+                  variant="filled"
+                />
+                <br />
+                <TextField
+                  required
+                  margin="dense"
+                  type="date"
+                  variant="outlined"
+                  value={addAppointment.dateTime.date}
+                  onChange={(e) => {
+                    setDTAdd({
+                      ...dTAdd,
+                      date: e.target.value,
+                    });
+                  }}
+                />
+                <TextField
+                  required
+                  margin="dense"
+                  type="time"
+                  variant="outlined"
+                  value={dTAdd.time}
+                  onChange={(e) =>
+                    setDTAdd({
+                      ...dTAdd,
+                      time: e.target.value,
+                    })
+                  }
+                />
               </DialogContent>
               <DialogActions>
-                <Button variant="contained" onClick={() => handleDialog()}>
+                <Button onClick={handleAddDialog} color="inherit">
                   Cancel
                 </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    handleDelete();
-                  }}
-                >
-                  Delete
+                <Button onClick={handleAdd} variant="contained" color="success">
+                  Add Appointment
                 </Button>
               </DialogActions>
             </Dialog>
             <Snackbar
               open={delSnackOpen}
               autoHideDuration={4000}
-              onClose={handleSnackClose}
+              onClose={handleDeleteSnackClose}
             >
-              <Alert
-                onClose={handleDialog}
-                severity="warning"
-                sx={{ width: "100%" }}
-                action={action}
-              >
+              <Alert onClose={handleDialog} severity="warning" action={action}>
                 Appointments deleted successfully!
               </Alert>
+            </Snackbar>
+            <Snackbar
+              autoHideDuration={4000}
+              open={editSnackOpen}
+              onClose={handleEditSnackClose}
+              sx={{ width: "100%" }}
+            >
+              <Alert severity="info">Appointment Edited Successfully!</Alert>
+            </Snackbar>
+            <Snackbar
+              autoHideDuration={4000}
+              open={addSnackOpen}
+              onClose={handleAddSnackClose}
+              sx={{ width: "100%" }}
+            >
+              <Alert severity="success">Appointment Added Successfully!</Alert>
             </Snackbar>
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ display: "flex", justifyContent: "center" }}></Box>
     </Container>
   );
 }
