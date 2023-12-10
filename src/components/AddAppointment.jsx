@@ -1,148 +1,108 @@
 import {
-  Box,
-  FormControl,
-  Typography,
+  DialogTitle,
+  DialogContent,
   TextField,
   Button,
-  Container,
+  DialogActions,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import { AppContext } from "../context/AppContext";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
+import React, { useContext } from "react";
+// import AddIcon from "@mui/icons-material/Add";
+import { AppointmentContext } from "../context/AppContext";
+// import MuiAlert from "@mui/material/Alert";
 
 function AddAppointment() {
-  const { appointments, setAppointments } = useContext(AppContext);
-  const [appointment, setAppointment] = useState({
-    id: "",
-    firstName: "",
-    lastName: "",
-    location: "",
-    dateTime: [
-      {
-        date: "",
-        time: "",
-      },
-    ],
-  });
-  const [open, setOpen] = useState(false);
-  const addAppointment = () => {
-    setAppointments([...appointments, appointment]);
-    setAppointment({
-      id: "",
-      firstName: "",
-      lastName: "",
-      location: "",
-      dateTime: [
-        {
-          date: "",
-          time: "",
-        },
-      ],
-    });
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
+  const {
+    addAppointment,
+    setAddAppointment,
+    dTAdd,
+    setDTAdd,
+    handleAdd,
+    handleAddDialog,
+  } = useContext(AppointmentContext);
   return (
-    <Box>
-      <Typography variant="h4" color="white">
-        Add Appointment
-      </Typography>
-      <FormControl>
+    <>
+      <DialogTitle>{"Add Appointment"}</DialogTitle>
+      <DialogContent>
         <TextField
-          id="firstName"
+          autoFocus
+          required
+          margin="dense"
+          value={addAppointment.firstName}
+          onChange={(e) =>
+            setAddAppointment({
+              ...addAppointment,
+              firstName: e.target.value,
+            })
+          }
           label="First Name"
-          variant="outlined"
-          required
-          value={appointment.firstName}
-          onChange={(e) =>
-            setAppointment({ ...appointment, firstName: e.target.value })
-          }
-        />
-        <TextField
-          id="lastName"
-          label="Last Name"
-          variant="outlined"
-          required
-          value={appointment.lastName}
-          onChange={(e) =>
-            setAppointment({ ...appointment, lastName: e.target.value })
-          }
-        />
-        <TextField
-          id="location"
-          label="Location"
-          variant="outlined"
-          required
-          value={appointment.location}
-          onChange={(e) =>
-            setAppointment({ ...appointment, location: e.target.value })
-          }
-        />
-        <Container sx={{ display: "flex" }}>
-          <TextField
-            id="date"
-            type="date"
-            variant="outlined"
-            value={appointment.dateTime[0].date}
-            required
-            onChange={(e) =>
-              setAppointment({
-                ...appointment,
-                dateTime: [
-                  { ...appointment.dateTime[0], date: e.target.value },
-                ],
-              })
-            }
-          />
-          <TextField
-            id="time"
-            type="time"
-            variant="outlined"
-            required
-            value={appointment.dateTime[0].time}
-            onChange={(e) =>
-              setAppointment({
-                ...appointment,
-                dateTime: [
-                  { ...appointment.dateTime[0], time: e.target.value },
-                ],
-              })
-            }
-          />
-        </Container>
-        <Button variant="contained" onClick={addAppointment}>
-          <AddIcon />
-          Appointment
-        </Button>
-      </FormControl>
-      <Snackbar
-        open={open}
-        autoHideDuration={5000}
-        onClose={() => {
-          setOpen(false);
-        }}
-        message="Appointment Added"
-      >
-        <MuiAlert
-          elevation={6}
+          type="text"
           variant="filled"
-          onClose={handleClose}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          Appointment Added
-        </MuiAlert>
-      </Snackbar>
-    </Box>
+        />
+        <TextField
+          required
+          margin="dense"
+          label="Last Name"
+          value={addAppointment.lastName}
+          onChange={(e) =>
+            setAddAppointment({
+              ...addAppointment,
+              lastName: e.target.value,
+            })
+          }
+          type="text"
+          variant="filled"
+        />
+        <TextField
+          required
+          margin="dense"
+          label="Location"
+          value={addAppointment.location}
+          onChange={(e) =>
+            setAddAppointment({
+              ...addAppointment,
+              location: e.target.value,
+            })
+          }
+          type="text"
+          variant="filled"
+        />
+        <br />
+        <TextField
+          required
+          margin="dense"
+          type="date"
+          variant="outlined"
+          value={addAppointment.dateTime.date}
+          onChange={(e) => {
+            setDTAdd({
+              ...dTAdd,
+              date: e.target.value,
+            });
+          }}
+        />
+        <TextField
+          required
+          margin="dense"
+          type="time"
+          variant="outlined"
+          value={dTAdd.time}
+          onChange={(e) =>
+            setDTAdd({
+              ...dTAdd,
+              time: e.target.value,
+            })
+          }
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleAddDialog} color="inherit">
+          Cancel
+        </Button>
+        <Button onClick={handleAdd} variant="contained" color="success">
+          Add Appointment
+        </Button>
+      </DialogActions>
+    </>
   );
 }
 

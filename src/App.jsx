@@ -1,13 +1,11 @@
 import { useState } from "react";
 import AllAppointments from "./components/Appointments";
 import ResponsiveAppBar from "./components/Appbar";
-import Content from "./components/Content";
 import { AppContext } from "./context/AppContext";
 
 function App() {
   const [appointments, setAppointments] = useState([
     {
-      id: 1,
       firstName: "John",
       lastName: "Doe",
       location: "Falaknuma, Hyderabad",
@@ -23,7 +21,6 @@ function App() {
       ],
     },
     {
-      id: 2,
       firstName: "Jane",
       lastName: "Doe",
       location: "Banjara Hills, Hyderabad",
@@ -35,7 +32,6 @@ function App() {
       ],
     },
     {
-      id: 3,
       firstName: "Mohammed",
       lastName: "Azam",
       location: "Falaknuma, Hyderabad",
@@ -59,7 +55,6 @@ function App() {
   return (
     <AppContext.Provider value={{ appointments, setAppointments }}>
       <ResponsiveAppBar />
-      <Content />
       <AllAppointments />
     </AppContext.Provider>
   );
