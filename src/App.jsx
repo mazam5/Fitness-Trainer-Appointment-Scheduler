@@ -8,7 +8,7 @@ function App() {
     {
       firstName: "John",
       lastName: "Doe",
-      location: "Falaknuma, Hyderabad",
+      location: "San Diego, USA",
       dateTime: [
         {
           date: "2023-12-15",
@@ -21,9 +21,9 @@ function App() {
       ],
     },
     {
-      firstName: "Jane",
-      lastName: "Doe",
-      location: "Banjara Hills, Hyderabad",
+      firstName: "Ravi",
+      lastName: "Kumar",
+      location: "Mumbai, India",
       dateTime: [
         {
           date: "2023-12-25",
@@ -32,9 +32,9 @@ function App() {
       ],
     },
     {
-      firstName: "Mohammed",
-      lastName: "Azam",
-      location: "Falaknuma, Hyderabad",
+      firstName: "David",
+      lastName: "Smith",
+      location: "London, UK",
       dateTime: [
         {
           date: "2023-12-15",
