@@ -47,6 +47,7 @@ If above commands are not working, kindly install Node.js or Yarn
 
 ### Usage
 
+
 - Click on Green Button on the Home Page to Add a New Appointment.
 
 - To Edit an Appointment click on Pencil Icon.
@@ -55,9 +56,15 @@ If above commands are not working, kindly install Node.js or Yarn
 
 - You can add existing date & time to a specific appointment.
 
+(Live)[https://azam-fitness-trainer-scheduler.netlify.app/]
+
 ### Screenshots
 
 ![HomePage](screenshots/1.png)
 ![Add Appointment](screenshots/2.png)
 ![Delete Appointment](screenshots/3.png)
 ![Add existing datetime](screenshots/4.png)
+
+### Author
+
+- Mohammed Azam
