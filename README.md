@@ -67,7 +67,12 @@ https://classic.yarnpkg.com/en/docs/install/
 
 ### Usage
 
+<<<<<<< HEAD
 - Add Appointment
+=======
+
+- Click on Green Button on the Home Page to Add a New Appointment.
+>>>>>>> 7ba918cee399158c90855cbcc20a94d5777f09d3
 
   - Click on the Add Appointment Button
   - Enter the Client's First & Last Name, Appointment Date & Time, and Location
@@ -84,9 +89,15 @@ https://classic.yarnpkg.com/en/docs/install/
   - A Dialog Box will appear to confirm the deletion
   - Click on the Delete Button
 
+(Live)[https://azam-fitness-trainer-scheduler.netlify.app/]
+
 ### Screenshots
 
 ![HomePage](screenshots/1.png)
 ![Add Appointment](screenshots/2.png)
 ![Delete Appointment](screenshots/3.png)
 ![Add existing datetime](screenshots/4.png)
+
+### Author
+
+- Mohammed Azam
