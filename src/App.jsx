@@ -2,6 +2,8 @@ import { useState } from "react";
 import AllAppointments from "./components/Appointments";
 import ResponsiveAppBar from "./components/Appbar";
 import { AppContext } from "./context/AppContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ShowCalendar from "./components/ShowCalendar";
 
 function App() {
   const [appointments, setAppointments] = useState([
@@ -54,8 +56,20 @@ function App() {
 
   return (
     <AppContext.Provider value={{ appointments, setAppointments }}>
-      <ResponsiveAppBar />
-      <AllAppointments />
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <ResponsiveAppBar />
+                <AllAppointments />
+              </>
+            }
+          />
+          <Route path="/show-calendar" element={<ShowCalendar />} />
+        </Routes>
+      </Router>
     </AppContext.Provider>
   );
 }

@@ -13,8 +13,11 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const pages = ["Show Calendar"];
+const pages = ["Home", "Show Calendar"];
+
+const routes = ["/", "/show-calendar"];
 
 const settings = ["Profile", "Logout"];
 
@@ -91,7 +94,7 @@ export default function ResponsiveAppBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Link to={routes[pages.indexOf(page)]}>{page}</Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -124,7 +127,7 @@ export default function ResponsiveAppBar() {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                <Link to={routes[pages.indexOf(page)]}>{page}</Link>
               </Button>
             ))}
           </Box>

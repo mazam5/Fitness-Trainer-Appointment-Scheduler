@@ -189,9 +189,6 @@ export default function AllAppointments() {
     setEditField(appointments[newDateIndex]);
     setNewDate(!newDate);
   };
-  useEffect(() => {
-    console.log(editField);
-  }, [editField]);
 
   const handleAddDateTime = () => {
     const newUpdatedAppointments = [...appointments];
@@ -212,6 +209,9 @@ export default function AllAppointments() {
     setNewDate(false);
     setNewDateTime({ date: "", time: "" });
   };
+  useEffect(() => {
+    setAppointments(appointments);
+  }, [appointments, setAppointments]);
 
   return (
     <AppointmentContext.Provider
@@ -236,8 +236,8 @@ export default function AllAppointments() {
             variant="h4"
             sx={{
               fontSize: {
-                sm: "2rem",
-                md: "2.5rem",
+                sm: "1.2rem",
+                md: "2rem",
               },
             }}
           >
@@ -248,7 +248,16 @@ export default function AllAppointments() {
             Appointment
           </Button>
         </Box>
-        <TableContainer component={Paper} sx={{ my: "10px" }} elevation={5}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            my: "10px",
+            width: {
+              xs: "100%",
+            },
+          }}
+          elevation={5}
+        >
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: "ButtonText" }}>
@@ -271,7 +280,7 @@ export default function AllAppointments() {
                   <TableRow key={index1}>
                     {editView && editIndex === index1 ? (
                       <>
-                        <TableCell component="th" scope="row">
+                        <TableCell>
                           <TextField
                             id="firstName"
                             variant="outlined"
@@ -411,11 +420,26 @@ export default function AllAppointments() {
                     ) : (
                       <>
                         <TableCell>
-                          {appointment.firstName}
+                          <Typography
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: {
+                                sm: "0.6rem",
+                                md: "1rem",
+                              },
+                            }}
+                          >
+                            {appointment.firstName}
+                          </Typography>
                           <br />
                           <Typography
                             component={"span"}
-                            sx={{ fontWeight: "bold" }}
+                            sx={{
+                              fontSize: {
+                                sm: "0.7rem",
+                                md: "0.9rem",
+                              },
+                            }}
                           >
                             {appointment.lastName}
                           </Typography>
@@ -432,7 +456,15 @@ export default function AllAppointments() {
                                     }}
                                   >
                                     <Box>
-                                      <Typography sx={{ fontWeight: "bold" }}>
+                                      <Typography
+                                        sx={{
+                                          fontWeight: "bold",
+                                          fontSize: {
+                                            sm: "0.8rem",
+                                            md: "1rem",
+                                          },
+                                        }}
+                                      >
                                         {new Date(
                                           datetime.date +
                                             "T" +
@@ -444,7 +476,15 @@ export default function AllAppointments() {
                                           day: "numeric",
                                         })}
                                       </Typography>
-                                      <Typography sx={{ color: "grey" }}>
+                                      <Typography
+                                        sx={{
+                                          color: "grey",
+                                          fontSize: {
+                                            sm: "0.7rem",
+                                            md: "0.9rem",
+                                          },
+                                        }}
+                                      >
                                         {new Date(
                                           datetime.date +
                                             "T" +
@@ -465,6 +505,7 @@ export default function AllAppointments() {
                             <IconButton
                               variant="contained"
                               color="success"
+                              sx={{ m: "2" }}
                               onClick={() => {
                                 setNewDateIndex(index1);
                                 handleNewDate(index1);
@@ -476,7 +517,11 @@ export default function AllAppointments() {
                         </TableCell>
                         <TableCell>
                           <Typography
-                            sx={{ fontWeight: "semibold", color: "black" }}
+                            sx={{
+                              fontWeight: "bold",
+                              color: "black",
+                              fontSize: { sm: "0.7rem", md: "0.9rem" },
+                            }}
                           >
                             {appointment.location}
                           </Typography>
