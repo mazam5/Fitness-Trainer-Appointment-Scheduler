@@ -27,17 +27,13 @@ git clone https://github.com/mazam5/Fitness-Trainer-Appointment-Scheduler
 
 2. Navigate to the folder where you have cloned the repository
 
-Open the folder in VS Code or any other editor
+- Open the folder in VS Code or any other editor
 
 3. Install the Necessary JavaScript Packages by running the below command in cmd or terminal
 
 ```
 npm install
-```
-
 or
-
-```
 yarn install
 ```
 
@@ -45,35 +41,24 @@ yarn install
 
 ```
 npm start
-```
-
 or
-
-```
 yarn start
 ```
 
-Your Project will be running on http://localhost:3000
+Your Local Project will be running on http://localhost:3000
+
+Here you can see the live demo of the application
+[Netlify](https://azam-fitness-trainer-scheduler.netlify.app/)
 
 If above commands are not working, try installing the Node.js from the below link
 
-https://nodejs.org/en/download/
-
-or
-
-Yarn from the below link
-
-https://classic.yarnpkg.com/en/docs/install/
+[Node.js](https://nodejs.org/en/download/) or [Yarn](https://classic.yarnpkg.com/en/docs/install)
 
 ### Usage
 
-<<<<<<< HEAD
 - Add Appointment
-=======
 
-- Click on Green Button on the Home Page to Add a New Appointment.
->>>>>>> 7ba918cee399158c90855cbcc20a94d5777f09d3
-
+  - Click on Green Button on the Home Page to Add a New Appointment.
   - Click on the Add Appointment Button
   - Enter the Client's First & Last Name, Appointment Date & Time, and Location
   - Click on the Add Appointment Button
@@ -85,18 +70,33 @@ https://classic.yarnpkg.com/en/docs/install/
   - Click on the Save Button
 
 - Delete Appointment
+
   - Click on the Delete (bin) Icon on the Appointment Row
   - A Dialog Box will appear to confirm the deletion
   - Click on the Delete Button
 
-(Live)[https://azam-fitness-trainer-scheduler.netlify.app/]
+- Add New Appointment for an Existing Client
+  - Click on the Green Add Button in the Appointments cell for each appointment
+  - Enter the Appointment Date & Time
+  - Click on the Add Button
 
 ### Screenshots
 
+#### Home Page
+
 ![HomePage](screenshots/1.png)
+
+#### Add Appointment
+
 ![Add Appointment](screenshots/2.png)
-![Delete Appointment](screenshots/3.png)
-![Add existing datetime](screenshots/4.png)
+
+#### Add Appointment Time for an Existing Client
+
+![Add Appointment Time](screenshots/3.png)
+
+#### Calendar View of the Appointments
+
+![Calendar View](screenshots/4.png)
 
 ### Author
 
