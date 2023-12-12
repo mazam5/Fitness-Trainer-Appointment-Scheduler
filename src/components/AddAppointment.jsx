@@ -84,6 +84,7 @@ function AddAppointment() {
           required
           margin="dense"
           type="time"
+          timeFormat="HH:mm"
           variant="outlined"
           value={dTAdd.time}
           onChange={(e) =>

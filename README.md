@@ -84,19 +84,27 @@ If above commands are not working, try installing the Node.js from the below lin
 
 #### Home Page
 
-![HomePage](screenshots/1.png)
+![Home Page](/screenshots/1.png)
 
 #### Add Appointment
 
-![Add Appointment](screenshots/2.png)
+![Add Appointment](/screenshots/2.png)
 
 #### Add Appointment Time for an Existing Client
 
-![Add Appointment Time](screenshots/3.png)
+![Add Appointment Time for an Existing Client](/screenshots/3.png)
+
+#### Delete Appointment
+
+![Delete Appointment](/screenshots/4.png)
+
+#### Edit Appointment
+
+![Edit an Appointment](/screenshots/5.png)
 
 #### Calendar View of the Appointments
 
-![Calendar View](screenshots/4.png)
+![Calendar View of the Appointments](/screenshots/6.png)
 
 ### Author
 
